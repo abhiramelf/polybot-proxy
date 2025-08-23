@@ -1,0 +1,7 @@
+ai.bitcodex.tech {
+    # Route for your RAG bot
+    reverse_proxy /polybot/* https://primary-production-86b55.up.railway.app/webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
+
+    # Fallback route for your main n8n service
+    reverse_proxy /* primary-production-86b55.up.railway.app
+}
