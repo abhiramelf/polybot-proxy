@@ -1,7 +1,17 @@
 ai.bitcodex.tech {
-    # Route for your RAG bot
-    reverse_proxy /polybot/* https://primary-production-86b55.up.railway.app/webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
+    # Route 1: Handle the /polybot path.
+    # This block specifically targets requests to /polybot/*
+    handle_path /polybot/* {
+        # First, rewrite the incoming path to your n8n webhook's specific path.
+        rewrite * /webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
 
-    # Fallback route for your main n8n service
-    reverse_proxy /* primary-production-86b55.up.railway.app
+        # Now, proxy the rewritten request to the n8n host *without* the path.
+        reverse_proxy https://primary-production-86b55.up.railway.app
+    }
+
+    # Route 2: Handle all other traffic as a fallback for your main n8n instance.
+    # This will not affect requests that were already handled by the block above.
+    handle {
+        reverse_proxy /* {$N8N_URL}
+    }
 }
