@@ -6,7 +6,7 @@ ai.bitcodex.tech {
         rewrite * /webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
 
         # Now, proxy the rewritten request to the n8n host *without* the path.
-        reverse_proxy https://primary-production-86b55.up.railway.app
+        reverse_proxy https://n8n-bitcodex.up.railway.app
     }
 
     # Route 2: Handle all other traffic as a fallback for your main n8n instance.
