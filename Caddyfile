@@ -1,19 +1,19 @@
-:{$PORT} {
+{
     auto_https off
     admin off
+}
 
+:{$PORT} {
     encode zstd gzip
     log
 
     respond /health 200
 
-    # Route 1: /polybot → webhook on n8n backend
     handle_path /polybot/* {
         rewrite * /webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
         reverse_proxy http://${N8N_DOMAIN}:${N8N_PORT}
     }
 
-    # Route 2: everything else → n8n instance
     handle {
         reverse_proxy http://${N8N_DOMAIN}:${N8N_PORT}
     }
