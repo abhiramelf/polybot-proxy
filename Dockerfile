@@ -1,14 +1,17 @@
 # Use the official Caddy image
 FROM caddy:2-alpine
 
-# Switch to the root user to install packages
+# Switch to the root user to install packages and manage files
 USER root
 
-# Update package list and install the ca-certificates bundle
+# Install the ca-certificates bundle
 RUN apk add --no-cache ca-certificates
-
-# Switch back to the non-root caddy user for security
-USER caddy
 
 # Copy your Caddyfile configuration into the container
 COPY Caddyfile /etc/caddy/Caddyfile
+
+# IMPORTANT: Change the ownership of the Caddyfile to the 'caddy' user
+RUN chown caddy:caddy /etc/caddy/Caddyfile
+
+# Switch back to the non-root caddy user for security before running the server
+USER caddy
