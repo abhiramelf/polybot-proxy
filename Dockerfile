@@ -1,16 +1,17 @@
 # Use the official Caddy image
 FROM caddy:2-alpine
 
-# Switch to the root user to install packages.
-# We will stay as root to perform the file copy and then switch back at the end.
+# Switch to the root user to perform administrative tasks.
 USER root
 
-# Install the ca-certificates bundle
+# Install the ca-certificates bundle for proper TLS verification.
 RUN apk add --no-cache ca-certificates
 
-# Copy the Caddyfile and set its ownership to the 'caddy' user and group
-# in a single, atomic step. This is the modern and most reliable way.
-COPY --chown=caddy:caddy Caddyfile /etc/caddy/Caddyfile
+# Add caddy user and group
+RUN addgroup -S caddy && adduser -S -G caddy caddy
 
-# Now, switch back to the non-root caddy user for security before the server runs.
+# Copy the Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Switch back to the non-root caddy user for running the server.
 USER caddy
