@@ -11,10 +11,10 @@
 
     handle_path /polybot/* {
         rewrite * /webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
-        reverse_proxy http://${N8N_DOMAIN}:${N8N_PORT}
+        reverse_proxy ${N8N_DOMAIN}:${N8N_PORT}
     }
 
     handle {
-        reverse_proxy http://${N8N_DOMAIN}:${N8N_PORT}
+        reverse_proxy ${N8N_DOMAIN}:${N8N_PORT}
     }
 }
