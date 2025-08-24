@@ -1,17 +1,20 @@
-ai.bitcodex.tech {
-    # Route 1: Handle the /polybot path.
-    # This block specifically targets requests to /polybot/*
-    handle_path /polybot/* {
-        # First, rewrite the incoming path to your n8n webhook's specific path.
-        rewrite * /webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
+:{$PORT} {
+    auto_https off
+    admin off
 
-        # Now, proxy the rewritten request to the n8n host *without* the path.
-        reverse_proxy https://n8n-bitcodex.up.railway.app
+    encode zstd gzip
+    log
+
+    respond /health 200
+
+    # Route 1: /polybot → webhook on n8n backend
+    handle_path /polybot/* {
+        rewrite * /webhook/e80f40f5-f8dc-4d0e-9ce5-594c61d233df/chat
+        reverse_proxy http://${N8N_DOMAIN}:${N8N_PORT}
     }
 
-    # Route 2: Handle all other traffic as a fallback for your main n8n instance.
-    # This will not affect requests that were already handled by the block above.
+    # Route 2: everything else → n8n instance
     handle {
-        reverse_proxy /* {$N8N_URL}
+        reverse_proxy http://${N8N_DOMAIN}:${N8N_PORT}
     }
 }
